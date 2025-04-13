@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Message from "./Message";
 
 const Messages = () => {
+  
   return (
     <div>
-      <Message />
+      <Message  />
     </div>
   );
 };

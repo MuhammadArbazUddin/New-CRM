@@ -7,16 +7,15 @@ import Test from "../components/test";
 const InboxPage = () => {
   return (
     <>
-        <Navbar/>
-    <div className="flex ">
+      <Navbar />
+      <div className="flex ">
         <Sidebar />
-      <div className="w-full">
-        <Messages />
-        <Test/>
+        <div className="w-full">
+          <Messages />
+          <Test />
+        </div>
       </div>
-    </div>
     </>
-
   );
 };
 

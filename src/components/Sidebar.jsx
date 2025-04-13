@@ -1,6 +1,6 @@
 import { Home, Mail, MailIcon, Menu, Settings, User } from "lucide-react";
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -22,7 +22,7 @@ const Sidebar = () => {
     >
       {/* Sidebar Header */}
       <div className="flex items-center justify-between mb-6">
-        {isExpanded && <h1 className="text-xl font-bold">Dashboard</h1>}
+        {isExpanded && <NavLink to="/" className="text-xl font-bold">Dashboard</NavLink>}
         <button onClick={toggleSidebar}>
           <Menu className="ml-2 cursor-pointer" size={24} />
         </button>

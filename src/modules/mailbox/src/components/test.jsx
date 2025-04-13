@@ -5,7 +5,6 @@ const Test = () => {
   const getInboxEmails = useMailStore((state) => state.getInboxEmails)
   const getSentEmails = useMailStore((state) => state.getSentEmails)
   const getAllUser = useMailStore((state) => state.getAllUser)
-  
   const handleClick = () => {
     getInboxEmails();
     getSentEmails()

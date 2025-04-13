@@ -5,7 +5,8 @@ export const useMailStore = create((set, get) => ({
   isOpen: false,
   sendMailData: null,
   inboxEmails: [],
-  users:[],
+  users: [],
+  currentEmail: null,
 
   toggleModal: () => {
     const next = !get().isOpen;
@@ -32,8 +33,8 @@ export const useMailStore = create((set, get) => ({
   getAllUser: async () => {
     try {
       const res = await axiosInstance.get("/user/get-all");
-      set({users:res.data})
-      console.log("getAllUser", res.data)
+      set({ users: res.data });
+      console.log("getAllUser", res.data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -43,7 +44,7 @@ export const useMailStore = create((set, get) => ({
     try {
       const res = await axiosInstance.get("/mail/inbox");
       set({ inboxEmails: res.data });
-      console.log("getInboxEmails", res.data)
+      console.log("getInboxEmails", res.data);
     } catch (error) {
       console.error("Error fetching emails:", error);
     }
@@ -53,10 +54,21 @@ export const useMailStore = create((set, get) => ({
     try {
       const res = await axiosInstance.get("/mail/sent");
       set({ inboxEmails: res.data });
-      console.log("getSentEmails", res.data)
+      console.log("getSentEmails", res.data);
     } catch (error) {
       console.error("Error fetching emails:", error);
     }
   },
 
+  getMailById: async (mailId) => {
+    try {
+      const res = await axiosInstance.get(`/mail/${mailId}`);
+      set({ currentEmail: res.data });
+      console.log("getMailById", res.data);
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching email details:", error);
+      throw error;
+    }
+  },
 }));
