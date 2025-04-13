@@ -1,19 +1,14 @@
 import React, { useState } from "react";
-import {
-  Pencil,
-  Inbox,
-  Star,
-  Bookmark,
-  Send,
-  FileText,
-} from "lucide-react";
+import { Pencil, Inbox, Star, Bookmark, Send, FileText } from "lucide-react";
 import { useMailStore } from "../../../../store/useMailStore";
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const sidebarItems = [
   {
     icon: <Inbox size={20} />,
     text: "Inbox",
-    link: "/",
+    link: "/mail",
   },
   {
     icon: <Star size={20} />,
@@ -28,18 +23,18 @@ const sidebarItems = [
   {
     icon: <Send size={20} />,
     text: "Sent",
-    link: "/mail/sent",
+    link: "/sent",
   },
   {
     icon: <FileText size={20} />,
     text: "Drafts",
-    link: "/mail/drafts",
+    link: "/drafts",
   },
 ];
 
 const Sidebar = () => {
-  const [selected, setSelected] = useState(0);
-  const toggleModal = useMailStore((state) => state.toggleModal);
+  const { toggleModal } = useMailStore();
+  const location = useLocation();
 
   return (
     <div className=" min-h-screen bg-white  rounded-tr-3xl rounded-br-3xl p-4 flex flex-col">
@@ -56,12 +51,12 @@ const Sidebar = () => {
       </div>
       <div className="text-gray-600 flex flex-col gap-1">
         {sidebarItems.map((item, idx) => {
-          const isSelected = selected === idx;
+          const isSelected = location.pathname === item.link;
+
           return (
-            <a
-              href={item.link}
+            <Link
+              to={item.link}
               key={idx}
-              onClick={() => setSelected(idx)}
               className={`flex items-center gap-4 px-4 py-3 rounded-xl transition duration-200 font-medium ${
                 isSelected
                   ? "bg-blue-100 text-blue-900"
@@ -72,7 +67,7 @@ const Sidebar = () => {
                 {item.icon}
               </span>
               <p className="text-sm">{item.text}</p>
-            </a>
+            </Link>
           );
         })}
       </div>

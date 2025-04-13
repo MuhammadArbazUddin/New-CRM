@@ -1,9 +1,17 @@
-import React from 'react'
-
+import React from "react";
+import SentMailMessages from "../components/SentMailMessage";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 const SentMailPage = () => {
   return (
-    <div>SentMailPage</div>
-  )
-}
+    <>
+      <Navbar />
+      <div className="flex">
+        <Sidebar />
+        <SentMailMessages />
+      </div>
+    </>
+  );
+};
 
-export default SentMailPage
+export default SentMailPage;

@@ -8,35 +8,34 @@ import { LuRefreshCcw } from "react-icons/lu";
 
 const Message = () => {
   const {
-    getInboxEmails,
-    inboxEmails,
+    getSentEmails,
+    sentEmails,
     getMailById,
-    searchQuery,      
+    searchQuery, // Zustand state
   } = useMailStore();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (inboxEmails.length === 0) {
-      getInboxEmails();
+    if (sentEmails.length === 0) {
+      getSentEmails();
     }
-  }, [getInboxEmails, inboxEmails.length]);
+  }, [getSentEmails, sentEmails.length]);
 
   const handleClick = (mailId) => {
     getMailById(mailId);
     navigate(`/mail/${mailId}`);
   };
 
-  // Filter emails based on search query
-  const filteredEmails = inboxEmails.filter((email) =>
+  // Filter emails using search query
+  const filteredEmails = sentEmails.filter((email) =>
     email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
     email.body.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    email.sender?.fullName?.toLowerCase().includes(searchQuery.toLowerCase())
+    email.receiver?.fullName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="p-4 max-w-full overflow-x-hidden">
-      {/* Top Action Buttons */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-3">
           <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out">
@@ -48,7 +47,6 @@ const Message = () => {
         </div>
       </div>
 
-      {/* Email List */}
       {filteredEmails && filteredEmails.length > 0 ? (
         filteredEmails.map((email) => (
           <motion.div
@@ -68,11 +66,10 @@ const Message = () => {
               </div>
               <div>
                 <h1 className="font-semibold">
-                  {email.sender?.fullName || "Unknown Sender"}
+                  {email.sender?.fullName || "Unknown Receiver"}
                 </h1>
               </div>
             </div>
-
             <div className="flex-1 ml-4">
               <p className="text-gray-600 truncate max-w-full">
                 {email.subject} —{" "}
@@ -81,7 +78,6 @@ const Message = () => {
                   : email.body}
               </p>
             </div>
-
             <div className="flex-none text-gray-400 text-sm">
               <p>{new Date(email.createdAt).toLocaleDateString()}</p>
             </div>

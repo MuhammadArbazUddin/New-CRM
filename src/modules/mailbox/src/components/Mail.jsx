@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { IoMdMore, IoMdArrowBack } from "react-icons/io";
+import { IoMdArrowBack } from "react-icons/io";
 import {
   MdDeleteOutline,
   MdOutlineMarkEmailUnread,
@@ -36,7 +36,7 @@ const Mail = () => {
           <div className="flex items-center justify-between">
             <div>
               <div
-                onClick={() => navigate("/mail")}
+                onClick={() => navigate(-1)}
                 className="p-2 rounded-full hover:bg-gray-100 cursor-pointer"
               >
                 <IoMdArrowBack size={"20px"} />
@@ -65,12 +65,12 @@ const Mail = () => {
             <div className="text-gray-500 text-sm">
               <h1 className="font-medium">{currentEmail?.sender.fullName}</h1>
               <span className="text-sm">
-                to {currentEmail?.receiver.map((r) => r.email).join(", ")}
+                to {currentEmail?.receiver[0]?.receiverId?.fullName}
               </span>
             </div>
 
             <div className="my-10">
-              <p>{currentEmail?.body}</p>
+              <p className="break-words max-w-2xl">{currentEmail?.body}</p>
             </div>
           </div>
         </motion.div>

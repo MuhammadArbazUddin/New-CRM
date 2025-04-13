@@ -7,6 +7,10 @@ export const useMailStore = create((set, get) => ({
   inboxEmails: [],
   users: [],
   currentEmail: null,
+  sentEmails: [],
+  searchQuery: "",
+
+  setSearchQuery: (query) => set({ searchQuery: query }),
 
   toggleModal: () => {
     const next = !get().isOpen;
@@ -53,10 +57,10 @@ export const useMailStore = create((set, get) => ({
   getSentEmails: async () => {
     try {
       const res = await axiosInstance.get("/mail/sent");
-      set({ inboxEmails: res.data });
+      set({ sentEmails: res.data });
       console.log("getSentEmails", res.data);
     } catch (error) {
-      console.error("Error fetching emails:", error);
+      console.error("Error fetching sent emails:", error);
     }
   },
 
