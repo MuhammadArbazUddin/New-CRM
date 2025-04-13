@@ -8,7 +8,9 @@ const SentMailPage = () => {
       <Navbar />
       <div className="flex">
         <Sidebar />
+        <div className="w-full">
         <SentMailMessages />
+        </div>
       </div>
     </>
   );

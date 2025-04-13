@@ -2,13 +2,16 @@ import React from 'react'
 import { useMailStore } from '../../../../store/useMailStore'
 
 const Test = () => {
-  const getInboxEmails = useMailStore((state) => state.getInboxEmails)
-  const getSentEmails = useMailStore((state) => state.getSentEmails)
-  const getAllUser = useMailStore((state) => state.getAllUser)
+ 
+  const {getDraftEmails, getAllUser, getSentEmails ,getInboxEmails, getImportantEmails, getStarredEmails,getTrashEmails} = useMailStore()
   const handleClick = () => {
     getInboxEmails();
     getSentEmails()
     getAllUser()
+    getDraftEmails()
+    getImportantEmails()
+    getStarredEmails()
+    getTrashEmails()
   }
 
   return (

@@ -11,7 +11,7 @@ const Message = () => {
     getSentEmails,
     sentEmails,
     getMailById,
-    searchQuery, // Zustand state
+    searchQuery, 
   } = useMailStore();
 
   const navigate = useNavigate();
@@ -27,7 +27,6 @@ const Message = () => {
     navigate(`/mail/${mailId}`);
   };
 
-  // Filter emails using search query
   const filteredEmails = sentEmails.filter((email) =>
     email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
     email.body.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -37,7 +36,7 @@ const Message = () => {
   return (
     <div className="p-4 max-w-full overflow-x-hidden">
       <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-3">
+        <div className="flex ">
           <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out">
             <LuRefreshCcw size={"20px"} />
           </div>

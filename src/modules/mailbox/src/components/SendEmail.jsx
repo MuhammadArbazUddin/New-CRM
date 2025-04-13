@@ -4,7 +4,7 @@ import { IoClose } from "react-icons/io5";
 import toast from "react-hot-toast";
 
 const SendEmail = () => {
-  const { isOpen, toggleModal, sendMail, getAllUser, users } = useMailStore();
+  const { isOpen, toggleModal, sendMail, sendDraft , getAllUser, users } = useMailStore();
   const [formData, setFormData] = useState({
     to: "",
     subject: "",
@@ -79,6 +79,42 @@ const SendEmail = () => {
       console.error("Failed to send email:", error);
     }
   };
+
+  const handleSendDraft = async (e) => {
+    e.preventDefault();
+    if (!receiverId) {
+      toast.error("Please select a recipient from the dropdown");
+      return;
+    }
+
+    if (!formData.subject.trim()) {
+      toast.error("Subject cannot be empty");
+      return;
+    }
+
+    if (!formData.message.trim()) {
+      toast.error("Message cannot be empty");
+      return;
+    }
+
+    const sendDraftData = {
+      receiverIds: [receiverId],
+      subject: formData.subject,
+      body: formData.message,
+      attachments: "",
+    };
+
+    try {
+      await sendDraft(sendDraftData);
+      toast.success("Draft sent successfully!");
+      setFormData({ to: "", subject: "", message: "" });
+      setReceiverId(null);
+      toggleModal();
+    } catch (error) {
+      toast.error("Failed to send draft. Please try again.");
+      console.error("Failed to send draft:", error);
+    }
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -161,7 +197,13 @@ const SendEmail = () => {
           className="text-sm border-none focus:ring-0 p-1 outline-none placeholder-gray-500 resize-none"
         />
 
-        <div className="flex justify-end mt-2">
+        <div className="flex justify-end gap-2 mt-2">
+        <button
+            onClick={handleSendDraft}
+            className="bg-blue-600 text-white text-sm font-medium px-4 py-1.5 rounded-md hover:bg-blue-700"
+          >
+            Send Draft
+          </button>
           <button
             type="submit"
             className="bg-blue-600 text-white text-sm font-medium px-4 py-1.5 rounded-md hover:bg-blue-700"

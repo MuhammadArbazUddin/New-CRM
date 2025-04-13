@@ -29,21 +29,6 @@ const Inbox = () => {
             <IoMdRefresh size={"20px"} />
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <p className="text-sm text-gray-500">1-50 of 1</p>
-          <button
-            disabled={false}
-            className="hover:rounded-full hover:bg-gray-100"
-          >
-            <MdKeyboardArrowLeft size={"24px"} />
-          </button>
-          <button
-            disabled={false}
-            className="hover:rounded-full hover:bg-gray-100"
-          >
-            <MdKeyboardArrowRight size={"24px"} />
-          </button>
-        </div>
       </div>
       <div className="h-[90vh] overflow-y-auto">
         <div className="flex items-center gap-1">

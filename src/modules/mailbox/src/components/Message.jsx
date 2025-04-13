@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useMailStore } from "../../../../store/useMailStore";
 import { useNavigate } from "react-router-dom";
 import { LuRefreshCcw } from "react-icons/lu";
+import { Bookmark, Star } from "lucide-react";
 
 const Message = () => {
   const {
@@ -27,18 +28,25 @@ const Message = () => {
     navigate(`/mail/${mailId}`);
   };
 
-  // Filter emails based on search query
-  const filteredEmails = inboxEmails.filter((email) =>
-    email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    email.body.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    email.sender?.fullName?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredEmails = inboxEmails.filter((email) => {
+    if (!email) return false; // Skip invalid emails
+  
+    // Safe checks with optional chaining
+    const subject = email?.subject?.toLowerCase() || '';
+    const body = email?.body?.toLowerCase() || '';
+    const senderName = email?.sender?.fullName?.toLowerCase() || '';
+    const search = searchQuery.toLowerCase();
+  
+    return subject.includes(search) || body.includes(search) || senderName.includes(search);
+  });
+  
+  
 
   return (
     <div className="p-4 max-w-full overflow-x-hidden">
       {/* Top Action Buttons */}
       <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-3">
+        <div className="flex">
           <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out">
             <LuRefreshCcw size={"20px"} />
           </div>
@@ -64,11 +72,14 @@ const Message = () => {
                 <MdCropSquare className="w-5 h-5" />
               </div>
               <div className="flex-none text-gray-300">
-                <RiStarLine className="w-5 h-5" />
+                <Star className="w-5 h-5" />
+              </div>
+              <div className="flex-none text-gray-300">
+                <Bookmark className="w-5 h-5" />
               </div>
               <div>
                 <h1 className="font-semibold">
-                  {email.sender?.fullName || "Unknown Sender"}
+                {email.sender?.fullName || "Unknown Sender"}
                 </h1>
               </div>
             </div>
