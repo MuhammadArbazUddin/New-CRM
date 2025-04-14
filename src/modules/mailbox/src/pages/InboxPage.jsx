@@ -1,8 +1,8 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
-import Messages from "../components/Messages";
 import Navbar from "../components/Navbar";
 import Test from "../components/test";
+import Message from "../components/Message";
 
 const InboxPage = () => {
   return (
@@ -11,7 +11,7 @@ const InboxPage = () => {
       <div className="flex ">
         <Sidebar />
         <div className="w-full">
-          <Messages />
+          <Message />
           <Test />
         </div>
       </div>

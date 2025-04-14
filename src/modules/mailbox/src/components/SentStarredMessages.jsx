@@ -9,28 +9,32 @@ import { useMailStore } from "../../../../store/useMailStore";
 import { useNavigate } from "react-router-dom";
 import { LuRefreshCcw } from "react-icons/lu";
 
-const SentMailMessage = () => {
-  const { getSentEmails, sentEmails, getMailById, searchQuery } =
-    useMailStore();
+const SentStarredMessages = () => {
+  const {
+    getStarredEmails,
+    starredEmails,
+    getMailById,
+    searchQuery,
+  } = useMailStore();
 
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const fetchSentEmails = async () => {
+  const fetchStarredEmails = async () => {
     setLoading(true);
-    await getSentEmails();
+    await getStarredEmails();
     setLoading(false);
   };
 
   useEffect(() => {
-    if (sentEmails.length === 0) {
-      fetchSentEmails();
+    if (starredEmails.length === 0) {
+      fetchStarredEmails();
     }
-  }, [sentEmails.length]);
+  }, [starredEmails.length]);
 
   useEffect(() => {
-    fetchSentEmails();
+    fetchStarredEmails();
   }, []);
 
   const handleClick = (mailId) => {
@@ -45,10 +49,10 @@ const SentMailMessage = () => {
   };
 
   const handleTrashSelected = async () => {
-    console.log("Hi?");
+  console.log("Hi?");
   };
 
-  const filteredEmails = sentEmails.filter((email) => {
+  const filteredEmails = starredEmails.filter((email) => {
     if (!email) return false;
 
     const subject = email?.subject?.toLowerCase() || "";
@@ -72,7 +76,7 @@ const SentMailMessage = () => {
             className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            onClick={!loading ? fetchSentEmails : undefined}
+            onClick={!loading ? fetchStarredEmails : undefined}
           >
             <LuRefreshCcw
               className={`${loading ? "animate-spin" : ""}`}
@@ -164,4 +168,4 @@ const SentMailMessage = () => {
   );
 };
 
-export default SentMailMessage;
+export default SentStarredMessages;

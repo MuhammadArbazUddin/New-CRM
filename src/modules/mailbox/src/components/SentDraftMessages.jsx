@@ -62,13 +62,15 @@ const SentDraftMessages = () => {
       <div className="flex justify-between items-center mb-4">
         <div className="flex  items-center">
           <button
-            className="p-2 rounded-full hover:bg-gray-100 cursor-pointer transition"
+             className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             onClick={fetchDrafts}
           >
-            <LuRefreshCcw size={"20px"} />
+            <LuRefreshCcw className={`${loading ? "animate-spin" : ""}`} size={"20px"} />
           </button>
           {loading && (
-            <span className="text-sm text-gray-500 animate-pulse">
+            <span className="ml-2 text-sm text-gray-500 animate-pulse">
               Refreshing...
             </span>
           )}

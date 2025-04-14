@@ -13,6 +13,8 @@ import SentMailPage from "./modules/mailbox/src/pages/SentMailPage";
 import { Toaster } from "react-hot-toast";
 import Mail from "./modules/mailbox/src/components/Mail";
 import DraftPage from "./modules/mailbox/src/pages/DraftPage";
+import ImportantPage from "./modules/mailbox/src/pages/ImportantPage";
+import StarredPage from "./modules/mailbox/src/pages/StarredPage";
 
 const App = () => {
   const location = useLocation();
@@ -57,6 +59,14 @@ const App = () => {
             <Route
               path="/drafts"
               element={authUser ? <DraftPage />: <Navigate to="/login" /> }
+            />
+            <Route
+              path="/important"
+              element={authUser ? <ImportantPage />: <Navigate to="/login" /> }
+            />
+            <Route
+              path="/starred"
+              element={authUser ? <StarredPage />: <Navigate to="/login" /> }
             />
           </Routes>
         </main>
