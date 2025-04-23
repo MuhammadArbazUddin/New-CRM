@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
+  MdBookmark,
   MdCheckBox,
   MdCheckBoxOutlineBlank,
   MdDeleteOutline,
+  MdStar,
 } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useMailStore } from "../../../../store/useMailStore";
@@ -15,6 +17,9 @@ const SentImportantMessages = () => {
     importantEmails,
     getMailById,
     searchQuery,
+    toggleStarred,
+    toggleImportant,
+    toggleTrash,
   } = useMailStore();
 
   const [selectedEmails, setSelectedEmails] = useState([]);
@@ -48,8 +53,26 @@ const SentImportantMessages = () => {
     );
   };
 
+  
+  const handleStarSelected = async () => {
+    for (const id of selectedEmails) {
+      await toggleStarred(id);
+    }
+    fetchImportantEmails();
+  };
+
   const handleTrashSelected = async () => {
-  console.log("Hi?");
+    for (const id of selectedEmails) {
+      await toggleTrash(id);
+    }
+    fetchImportantEmails();
+  };
+
+  const handleImportantSelected = async () => {
+    for (const id of selectedEmails) {
+      await toggleImportant(id);
+    }
+    fetchImportantEmails();
   };
 
   const filteredEmails = importantEmails.filter((email) => {
@@ -89,16 +112,38 @@ const SentImportantMessages = () => {
             </span>
           )}
           <button
-            onClick={handleTrashSelected}
-            disabled={selectedEmails.length === 0 || loading}
-            className={`p-2 rounded-full transition ${
-              selectedEmails.length > 0
-                ? "hover:bg-red-100 text-red-600 cursor-pointer"
-                : "text-gray-300 cursor-not-allowed"
-            }`}
-          >
-            <MdDeleteOutline size={"20px"} />
-          </button>
+                    onClick={handleTrashSelected}
+                    disabled={selectedEmails.length === 0 || loading}
+                    className={`p-2 rounded-full transition ${
+                      selectedEmails.length > 0
+                        ? "hover:bg-red-100 text-red-600 cursor-pointer"
+                        : "text-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    <MdDeleteOutline size={"20px"} />
+                  </button>
+                  <button
+                    onClick={handleStarSelected}
+                    disabled={selectedEmails.length === 0 || loading}
+                    className={`p-2 rounded-full transition ${
+                      selectedEmails.length > 0
+                        ? "hover:bg-yellow-100 text-yellow-500 cursor-pointer"
+                        : "text-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    <MdStar size={"20px"} />
+                  </button>
+                  <button
+                    onClick={handleImportantSelected}
+                    disabled={selectedEmails.length === 0 || loading}
+                    className={`p-2 rounded-full transition ${
+                      selectedEmails.length > 0
+                        ? "hover:bg-green-100 text-green-500 cursor-pointer"
+                        : "text-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    <MdBookmark size={"20px"} />
+                  </button>
         </div>
       </div>
 

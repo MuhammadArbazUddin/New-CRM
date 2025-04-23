@@ -15,6 +15,7 @@ import Mail from "./modules/mailbox/src/components/Mail";
 import DraftPage from "./modules/mailbox/src/pages/DraftPage";
 import ImportantPage from "./modules/mailbox/src/pages/ImportantPage";
 import StarredPage from "./modules/mailbox/src/pages/StarredPage";
+import BinPage from "./modules/mailbox/src/pages/BinPage";
 
 const App = () => {
   const location = useLocation();
@@ -67,6 +68,10 @@ const App = () => {
             <Route
               path="/starred"
               element={authUser ? <StarredPage />: <Navigate to="/login" /> }
+            />
+             <Route
+              path="/bin"
+              element={authUser ? <BinPage />: <Navigate to="/login" /> }
             />
           </Routes>
         </main>

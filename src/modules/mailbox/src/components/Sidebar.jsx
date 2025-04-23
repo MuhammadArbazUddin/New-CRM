@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pencil, Inbox, Star, Bookmark, Send, FileText } from "lucide-react";
+import { Pencil, Inbox, Star, Bookmark, Send, FileText, Trash } from "lucide-react";
 import { useMailStore } from "../../../../store/useMailStore";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -29,6 +29,11 @@ const sidebarItems = [
     icon: <FileText size={20} />,
     text: "Drafts",
     link: "/drafts",
+  },
+  {
+    icon: <Trash size={20} />,
+    text: "Bin",
+    link: "/bin",
   },
 ];
 

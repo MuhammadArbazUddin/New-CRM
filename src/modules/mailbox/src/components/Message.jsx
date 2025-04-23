@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
+  MdBookmark,
   MdCheckBox,
   MdCheckBoxOutlineBlank,
   MdDeleteOutline,
+  MdStar,
 } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useMailStore } from "../../../../store/useMailStore";
@@ -15,6 +17,9 @@ const Message = () => {
     inboxEmails,
     getMailById,
     searchQuery,
+    toggleStarred,
+    toggleImportant,
+    toggleTrash
   } = useMailStore();
 
   const [selectedEmails, setSelectedEmails] = useState([]);
@@ -26,6 +31,30 @@ const Message = () => {
     await getInboxEmails();
     setLoading(false);
   };
+
+  const handleStarSelected = async () => {
+    for (const id of selectedEmails) {
+      await toggleStarred(id);
+    }
+    fetchInboxEmails(); 
+  };
+
+  const handleTrashSelected = async () => {
+    for (const id of selectedEmails) {
+      await toggleTrash(id);
+    }
+    fetchInboxEmails(); 
+  };
+
+
+  const handleImportantSelected = async () => {
+    for (const id of selectedEmails) {
+      await toggleImportant(id);
+      
+    }
+    fetchInboxEmails();
+  };
+
 
   useEffect(() => {
     if (inboxEmails.length === 0) {
@@ -46,10 +75,6 @@ const Message = () => {
     setSelectedEmails((prev) =>
       prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
     );
-  };
-
-  const handleTrashSelected = async () => {
-  console.log("Hi?");
   };
 
   const filteredEmails = inboxEmails.filter((email) => {
@@ -98,6 +123,28 @@ const Message = () => {
             }`}
           >
             <MdDeleteOutline size={"20px"} />
+          </button>
+          <button
+            onClick={handleStarSelected}
+            disabled={selectedEmails.length === 0 || loading}
+            className={`p-2 rounded-full transition ${
+              selectedEmails.length > 0
+                ? "hover:bg-yellow-100 text-yellow-500 cursor-pointer"
+                : "text-gray-300 cursor-not-allowed"
+            }`}
+          >
+            <MdStar size={"20px"} />
+          </button>
+          <button
+            onClick={handleImportantSelected}
+            disabled={selectedEmails.length === 0 || loading}
+            className={`p-2 rounded-full transition ${
+              selectedEmails.length > 0
+                ? "hover:bg-green-100 text-green-500 cursor-pointer"
+                : "text-gray-300 cursor-not-allowed"
+            }`}
+          >
+            <MdBookmark size={"20px"} />
           </button>
         </div>
       </div>

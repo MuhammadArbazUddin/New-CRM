@@ -3,30 +3,36 @@ import {
   MdCheckBoxOutlineBlank,
   MdCheckBox,
   MdDeleteOutline,
+  MdRestoreFromTrash,
 } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useMailStore } from "../../../../store/useMailStore";
 import { useNavigate } from "react-router-dom";
 import { LuRefreshCcw } from "react-icons/lu";
 
-const SentDraftMessages = () => {
-  const { getDraftEmails, draftEmails, getMailById, searchQuery , removeDraft } =
-    useMailStore();
-
+const SentBinMessages = () => {
+  const {
+    getTrashEmails,
+    trashEmails,
+    getMailById,
+    searchQuery,
+    removeTrash,
+    toggleTrash,
+  } = useMailStore();
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchDrafts();
-  }, []);
-
-  const fetchDrafts = async () => {
+  const fetchTrash = async () => {
     setLoading(true);
-    await getDraftEmails();
+    await getTrashEmails();
     setSelectedEmails([]);
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchTrash();
+  }, []);
 
   const handleClick = (mailId) => {
     getMailById(mailId);
@@ -39,17 +45,23 @@ const SentDraftMessages = () => {
     );
   };
 
-  const removeDraftSelected = async (id) => {
-    try {
-      await removeDraft(id);
-      console.log("Draft removed successfully.");
-    } catch (err) {
-      console.error("Failed to remove draft:", err.message);
+  const handleTrashSelected = async () => {
+    for (const id of selectedEmails) {
+      await toggleTrash(id);
     }
-    fetchDrafts();
+    fetchInboxEmails();
+  };
+  const handleBulkDelete = async () => {
+    if (selectedEmails.length === 0) return;
+
+    for (let id of selectedEmails) {
+      await removeTrash(id);
+    }
+
+    fetchTrash(); // Refresh after deletion
   };
 
-  const filteredEmails = draftEmails.filter(
+  const filteredEmails = trashEmails.filter(
     (email) =>
       email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
       email.body.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -63,12 +75,15 @@ const SentDraftMessages = () => {
       <div className="flex justify-between items-center mb-4">
         <div className="flex  items-center">
           <button
-             className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${
+            className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            onClick={fetchDrafts}
+            onClick={fetchTrash}
           >
-            <LuRefreshCcw className={`${loading ? "animate-spin" : ""}`} size={"20px"} />
+            <LuRefreshCcw
+              className={`${loading ? "animate-spin" : ""}`}
+              size={"20px"}
+            />
           </button>
           {loading && (
             <span className="ml-2 text-sm text-gray-500 animate-pulse">
@@ -76,27 +91,33 @@ const SentDraftMessages = () => {
             </span>
           )}
           <button
-  onClick={async () => {
-    for (const id of selectedEmails) {
-      await removeDraftSelected(id);
-    }
-    setSelectedEmails([]);
-  }}
-  disabled={selectedEmails.length === 0}
-  className={`p-2 rounded-full transition ${
-    selectedEmails.length > 0
-      ? "hover:bg-red-100 text-red-600 cursor-pointer"
-      : "text-gray-300 cursor-not-allowed"
-  }`}
->
-  <MdDeleteOutline size={"20px"} />
-</button>
+            onClick={handleTrashSelected}
+            disabled={selectedEmails.length === 0 || loading}
+            className={`p-2 rounded-full transition ${
+              selectedEmails.length > 0
+                ? "hover:bg-red-100 text-red-600 cursor-pointer"
+                : "text-gray-300 cursor-not-allowed"
+            }`}
+          >
+            <MdRestoreFromTrash size={"20px"} />
+          </button>
+          <button
+            onClick={handleBulkDelete}
+            disabled={selectedEmails.length === 0}
+            className={`p-2 rounded-full transition ${
+              selectedEmails.length > 0
+                ? "hover:bg-red-100 text-red-600 cursor-pointer"
+                : "text-gray-300 cursor-not-allowed"
+            }`}
+          >
+            <MdDeleteOutline size={"20px"} />
+          </button>
         </div>
       </div>
 
       {loading ? (
         <div className="text-center text-gray-400 mt-6 animate-pulse">
-          Loading drafts...
+          Loading trash...
         </div>
       ) : filteredEmails && filteredEmails.length > 0 ? (
         filteredEmails.map((email) => {
@@ -156,4 +177,4 @@ const SentDraftMessages = () => {
   );
 };
 
-export default SentDraftMessages;
+export default SentBinMessages;

@@ -136,6 +136,24 @@ export const useMailStore = create((set, get) => ({
     }
   },
 
+  removeTrash: async (id) => {
+    try {
+      const res = await axiosInstance.put(`/mail/remove-trash/${id}`);
+      console.log("Trash email removed:", res.data);
+  
+      const updatedTrash = get().trashEmails.filter(
+        (email) => email._id !== id
+      );
+      set({ trashEmails: updatedTrash });
+  
+      return res.data;
+    } catch (error) {
+      console.error("Error removing trash email:", error.message);
+      throw error;
+    }
+  },
+  
+
   getSentEmails: async () => {
     try {
       const res = await axiosInstance.get("/mail/sent");

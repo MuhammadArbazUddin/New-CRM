@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
+  MdBookmark,
   MdCheckBox,
   MdCheckBoxOutlineBlank,
   MdDeleteOutline,
+  MdStar,
 } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useMailStore } from "../../../../store/useMailStore";
@@ -15,6 +17,9 @@ const SentStarredMessages = () => {
     starredEmails,
     getMailById,
     searchQuery,
+    toggleStarred,
+    toggleImportant,
+    toggleTrash,
   } = useMailStore();
 
   const [selectedEmails, setSelectedEmails] = useState([]);
@@ -48,8 +53,25 @@ const SentStarredMessages = () => {
     );
   };
 
+  const handleStarSelected = async () => {
+    for (const id of selectedEmails) {
+      await toggleStarred(id);
+    }
+    fetchStarredEmails();
+  };
+
   const handleTrashSelected = async () => {
-  console.log("Hi?");
+    for (const id of selectedEmails) {
+      await toggleTrash(id);
+    }
+    fetchStarredEmails();
+  };
+
+  const handleImportantSelected = async () => {
+    for (const id of selectedEmails) {
+      await toggleImportant(id);
+    }
+    fetchStarredEmails();
   };
 
   const filteredEmails = starredEmails.filter((email) => {
@@ -98,6 +120,28 @@ const SentStarredMessages = () => {
             }`}
           >
             <MdDeleteOutline size={"20px"} />
+          </button>
+          <button
+            onClick={handleStarSelected}
+            disabled={selectedEmails.length === 0 || loading}
+            className={`p-2 rounded-full transition ${
+              selectedEmails.length > 0
+                ? "hover:bg-yellow-100 text-yellow-500 cursor-pointer"
+                : "text-gray-300 cursor-not-allowed"
+            }`}
+          >
+            <MdStar size={"20px"} />
+          </button>
+          <button
+            onClick={handleImportantSelected}
+            disabled={selectedEmails.length === 0 || loading}
+            className={`p-2 rounded-full transition ${
+              selectedEmails.length > 0
+                ? "hover:bg-green-100 text-green-500 cursor-pointer"
+                : "text-gray-300 cursor-not-allowed"
+            }`}
+          >
+            <MdBookmark size={"20px"} />
           </button>
         </div>
       </div>

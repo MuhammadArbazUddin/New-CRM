@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { LuRefreshCcw } from "react-icons/lu";
 
 const SentMailMessage = () => {
-  const { getSentEmails, sentEmails, getMailById, searchQuery } =
+  const { getSentEmails, sentEmails, getMailById, searchQuery, toggleTrash } =
     useMailStore();
 
   const [selectedEmails, setSelectedEmails] = useState([]);
@@ -45,7 +45,10 @@ const SentMailMessage = () => {
   };
 
   const handleTrashSelected = async () => {
-    console.log("Hi?");
+    for (const id of selectedEmails) {
+      await toggleTrash(id);
+    }
+    fetchSentEmails();
   };
 
   const filteredEmails = sentEmails.filter((email) => {
