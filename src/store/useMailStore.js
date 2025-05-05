@@ -25,7 +25,8 @@ export const useMailStore = create((set, get) => ({
   getAllUser: async () => {
     try {
       const res = await axiosInstance.get("/user/get-all");
-      set({ users: res.data });
+      set({ users: res.data.data });
+      console.log("Users fetched successfully:", res.data.data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -42,6 +43,7 @@ export const useMailStore = create((set, get) => ({
         throw new Error(response.data.message || "Something went wrong");
       }
       set({ sendMailData: response.data });
+      console.log("Email sent successfully:", response.data.data);
     } catch (error) {
       console.error("Error sending email:", error.message);
     }
@@ -62,6 +64,7 @@ export const useMailStore = create((set, get) => ({
         throw new Error(response.data.message || "Something went wrong");
       }
       set({ sendDraftData: response.data });
+      console.log("Draft saved successfully:", response.data.data);
     } catch (error) {
       console.error("Error sending email:", error.message);
     }
@@ -70,7 +73,8 @@ export const useMailStore = create((set, get) => ({
   getDraftEmails: async () => {
     try {
       const res = await axiosInstance.get("/mail/get-draft");
-      set({ draftEmails: res.data });
+      set({ draftEmails: res.data.data });
+      console.log("Draft emails fetched successfully:", res.data.data);
     } catch (error) {
       console.error("Error fetching emails:", error);
     }
@@ -90,20 +94,22 @@ export const useMailStore = create((set, get) => ({
       throw error;
     }
   },
-
-  getInboxEmails: async () => {
+  
+  getInboxEmails: async (page = 1) => {
     try {
-      const res = await axiosInstance.get("/mail/inbox");
-      set({ inboxEmails: res.data });
+      const res = await axiosInstance.get(`/mail/inbox?page=${page}`);
+      set({ inboxEmails: res.data.data });
+      console.log("Inbox emails fetched successfully:", res.data.data);
     } catch (error) {
       console.error("Error fetching emails:", error);
     }
   },
-
+  
   getImportantEmails: async () => {
     try {
       const res = await axiosInstance.get("/mail/get-important");
-      set({ importantEmails: res.data });
+      set({ importantEmails: res.data.data });
+      console.log("Important emails fetched successfully:", res.data.data);
     } catch (error) {
       console.error("Error fetching important emails:", error);
     }
@@ -112,7 +118,8 @@ export const useMailStore = create((set, get) => ({
   getStarredEmails: async () => {
     try {
       const res = await axiosInstance.get("/mail/get-starred");
-      set({ starredEmails: res.data });
+      set({ starredEmails: res.data.data });
+      console.log("Starred emails fetched successfully:", res.data.data);
     } catch (error) {
       console.error("Error fetching starred emails:", error);
     }
@@ -121,7 +128,8 @@ export const useMailStore = create((set, get) => ({
   getTrashEmails: async () => {
     try {
       const res = await axiosInstance.get("/mail/get-trash");
-      set({ trashEmails: res.data });
+      set({ trashEmails: res.data.data });
+      console.log("Trash emails fetched successfully:", res.data.data);
     } catch (error) {
       console.error("Error fetching trash emails:", error);
     }
@@ -142,11 +150,11 @@ export const useMailStore = create((set, get) => ({
     }
   },
   
-
   getSentEmails: async () => {
     try {
       const res = await axiosInstance.get("/mail/sent");
-      set({ sentEmails: res.data });
+      set({ sentEmails: res.data.data });
+      console.log("Sent emails fetched successfully:", res.data.data);
     } catch (error) {
       console.error("Error fetching sent emails:", error);
     }
@@ -179,7 +187,8 @@ export const useMailStore = create((set, get) => ({
   getMailById: async (mailId) => {
     try {
       const res = await axiosInstance.get(`/mail/${mailId}`);
-      set({ currentEmail: res.data });
+      set({ currentEmail: res.data.data });
+      console.log("Email by ID fetched successfully:", res.data.data);
       return res.data;
     } catch (error) {
       console.error("Error fetching email details:", error);

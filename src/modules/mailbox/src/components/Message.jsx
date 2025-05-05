@@ -19,16 +19,18 @@ const Message = () => {
     searchQuery,
     toggleStarred,
     toggleImportant,
-    toggleTrash
+    toggleTrash,
   } = useMailStore();
 
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
-  const fetchInboxEmails = async () => {
+  const fetchInboxEmails = async (pageNumber = 1) => {
     setLoading(true);
-    await getInboxEmails();
+    await getInboxEmails(pageNumber);
+    setPage(pageNumber);
     setLoading(false);
   };
 
@@ -36,34 +38,25 @@ const Message = () => {
     for (const id of selectedEmails) {
       await toggleStarred(id);
     }
-    fetchInboxEmails();
+    fetchInboxEmails(page);
   };
 
   const handleTrashSelected = async () => {
     for (const id of selectedEmails) {
       await toggleTrash(id);
     }
-    fetchInboxEmails();
+    fetchInboxEmails(page);
   };
-
 
   const handleImportantSelected = async () => {
     for (const id of selectedEmails) {
       await toggleImportant(id);
-
     }
-    fetchInboxEmails();
+    fetchInboxEmails(page);
   };
 
-
   useEffect(() => {
-    if (inboxEmails.length === 0) {
-      fetchInboxEmails();
-    }
-  }, [inboxEmails.length]);
-
-  useEffect(() => {
-    fetchInboxEmails();
+    fetchInboxEmails(1);
   }, []);
 
   const handleClick = (mailId) => {
@@ -77,12 +70,14 @@ const Message = () => {
     );
   };
 
-  const filteredEmails = inboxEmails.filter((email) => {
+  const { currentPage, totalPages, mails = [] } = inboxEmails || {};
+
+  const filteredEmails = mails.filter((email) => {
     if (!email) return false;
 
-    const subject = email?.subject?.toLowerCase() || "";
-    const body = email?.body?.toLowerCase() || "";
-    const senderName = email?.sender?.fullName?.toLowerCase() || "";
+    const subject = email.subject?.toLowerCase() || "";
+    const body = email.body?.toLowerCase() || "";
+    const senderName = email.sender?.fullName?.toLowerCase() || "";
     const search = searchQuery.toLowerCase();
 
     return (
@@ -98,14 +93,10 @@ const Message = () => {
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <div
-            className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            onClick={!loading ? fetchInboxEmails : undefined}
+            className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            onClick={!loading ? () => fetchInboxEmails(page) : undefined}
           >
-            <LuRefreshCcw
-              className={`${loading ? "animate-spin" : ""}`}
-              size={"20px"}
-            />
+            <LuRefreshCcw className={`${loading ? "animate-spin" : ""}`} size={"20px"} />
           </div>
           {loading && (
             <span className="ml-2 text-sm text-gray-500 animate-pulse">
@@ -116,9 +107,8 @@ const Message = () => {
             onClick={handleTrashSelected}
             disabled={selectedEmails.length === 0 || loading}
             className={`p-2 rounded-full transition ${selectedEmails.length > 0
-                ? "hover:bg-red-100 text-red-600 cursor-pointer"
-                : "text-gray-300 cursor-not-allowed"
-              }`}
+              ? "hover:bg-red-100 text-red-600 cursor-pointer"
+              : "text-gray-300 cursor-not-allowed"}`}
           >
             <MdDeleteOutline size={"20px"} />
           </button>
@@ -126,9 +116,8 @@ const Message = () => {
             onClick={handleStarSelected}
             disabled={selectedEmails.length === 0 || loading}
             className={`p-2 rounded-full transition ${selectedEmails.length > 0
-                ? "hover:bg-yellow-100 text-yellow-500 cursor-pointer"
-                : "text-gray-300 cursor-not-allowed"
-              }`}
+              ? "hover:bg-yellow-100 text-yellow-500 cursor-pointer"
+              : "text-gray-300 cursor-not-allowed"}`}
           >
             <MdStar size={"20px"} />
           </button>
@@ -136,9 +125,8 @@ const Message = () => {
             onClick={handleImportantSelected}
             disabled={selectedEmails.length === 0 || loading}
             className={`p-2 rounded-full transition ${selectedEmails.length > 0
-                ? "hover:bg-green-100 text-green-500 cursor-pointer"
-                : "text-gray-300 cursor-not-allowed"
-              }`}
+              ? "hover:bg-green-100 text-green-500 cursor-pointer"
+              : "text-gray-300 cursor-not-allowed"}`}
           >
             <MdBookmark size={"20px"} />
           </button>
@@ -150,7 +138,7 @@ const Message = () => {
         <div className="text-center text-gray-400 mt-6 animate-pulse">
           Loading mails...
         </div>
-      ) : filteredEmails && filteredEmails.length > 0 ? (
+      ) : filteredEmails.length > 0 ? (
         filteredEmails.map((email) => {
           const isSelected = selectedEmails.includes(email._id);
           return (
@@ -159,13 +147,10 @@ const Message = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className={`flex items-start justify-between border-b border-gray-200 px-4 py-3 text-sm transition ${isSelected ? "bg-blue-50" : "hover:bg-gray-50"
-                }`}
+              className={`flex items-start justify-between border-b border-gray-200 px-4 py-3 text-sm transition  ${isSelected ? "bg-blue-50" : "hover:bg-gray-50"}`}
               onClick={() => handleClick(email._id)}
             >
-              <div className="flex items-center gap-3">
-
-
+              <div className="flex items-center gap-3 ">
                 <div
                   className="text-gray-500 cursor-pointer"
                   onClick={(e) => {
@@ -179,15 +164,12 @@ const Message = () => {
                     <MdCheckBoxOutlineBlank className="w-5 h-5" />
                   )}
                 </div>
-                <div
-                  onClick={() => handleClick(email._id)}
-                  className="cursor-pointer"
-                ></div>
               </div>
 
-              <h1 className="font-semibold">
-                {email.sender?.fullName || "Unknown Receiver"}
+              <h1 className="font-semibold ml-4">
+                {email.sender?.fullName || "Unknown Sender"}
               </h1>
+
               <div className="flex-1 ml-4">
                 <p className="text-gray-600 truncate max-w-full">
                   {email.subject} —{" "}
@@ -198,11 +180,10 @@ const Message = () => {
               </div>
 
               <div>
-                {/* User-friendly tags */}
-                {email.detail.starred && (
+                {email.detail?.starred && (
                   <span className="ml-2 text-yellow-600 font-semibold">Starred</span>
                 )}
-                {email.detail.important && (
+                {email.detail?.important && (
                   <span className="ml-2 text-green-600 font-semibold">Important</span>
                 )}
               </div>
@@ -217,6 +198,29 @@ const Message = () => {
         <p className="text-center text-gray-500 mt-4">
           {loading ? "Loading emails..." : "No emails found"}
         </p>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6 space-x-4">
+          <button
+            onClick={() => fetchInboxEmails(page - 1)}
+            disabled={page <= 1 || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Prev
+          </button>
+          <span className="self-center text-sm font-medium text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => fetchInboxEmails(page + 1)}
+            disabled={page >= totalPages || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
       )}
     </div>
   );

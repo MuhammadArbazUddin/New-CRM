@@ -12,22 +12,37 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!fullName || !email || !password) {
+  
+    const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+  
+    if (!trimmedName || !trimmedEmail || !password) {
       setError('Please fill out all fields.');
       return;
     }
   
-    // Create the authData object with name, email, and password
-    const authData = { fullName, email, password };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
   
-    // Now pass the authData to the signup function from the store
+    const authData = {
+      fullName: trimmedName,
+      email: trimmedEmail,
+      password,
+    };
+  
     try {
-      await useAuthStore.getState().signup(authData);  // Call the signup function from the store
-      // You can do any post-signup actions here (e.g., navigate to another page)
-    } catch (error) {
-      setError("Signup failed. Please try again.");
+      await useAuthStore.getState().signup(authData);
+      navigate('/'); // redirect after signup success
+    } catch (err) {
+      const errMsg =
+        err?.response?.data?.message || "Signup failed. Please try again.";
+      setError(errMsg);
     }
   };
+  
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">

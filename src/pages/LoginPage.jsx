@@ -10,21 +10,25 @@ const LoginPage = () => {
   const { login } = useAuthStore();
 
   const handleSubmit = async (e) => {
-
-    if (!email || !password) {
+    e.preventDefault(); 
+    const cleanedEmail = email.trim().toLowerCase();
+    const cleanedPassword = password.trim();
+  
+    if (!cleanedEmail || !cleanedPassword) {
       setError('Please enter both email and password.');
       return;
     }
-
+  
     setError('');
-
+  
     try {
-      await login({ email, password });
-      navigate('/'); // Navigate to homepage on success
+      await login({ email: cleanedEmail, password: cleanedPassword });
+      navigate('/');
     } catch (err) {
-      toast.error('Login failed. Please check your credentials.');
+      const errMsg = err?.response?.data?.message || 'Login failed. Please check your credentials.';
+      setError(errMsg);
+      toast.error(errMsg);
       console.error('Login failed:', err);
-      setError('Login failed. Please check your credentials.');
     }
   };
 
