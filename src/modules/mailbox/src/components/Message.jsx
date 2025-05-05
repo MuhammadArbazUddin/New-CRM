@@ -36,21 +36,21 @@ const Message = () => {
     for (const id of selectedEmails) {
       await toggleStarred(id);
     }
-    fetchInboxEmails(); 
+    fetchInboxEmails();
   };
 
   const handleTrashSelected = async () => {
     for (const id of selectedEmails) {
       await toggleTrash(id);
     }
-    fetchInboxEmails(); 
+    fetchInboxEmails();
   };
 
 
   const handleImportantSelected = async () => {
     for (const id of selectedEmails) {
       await toggleImportant(id);
-      
+
     }
     fetchInboxEmails();
   };
@@ -98,9 +98,8 @@ const Message = () => {
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <div
-            className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             onClick={!loading ? fetchInboxEmails : undefined}
           >
             <LuRefreshCcw
@@ -116,33 +115,30 @@ const Message = () => {
           <button
             onClick={handleTrashSelected}
             disabled={selectedEmails.length === 0 || loading}
-            className={`p-2 rounded-full transition ${
-              selectedEmails.length > 0
+            className={`p-2 rounded-full transition ${selectedEmails.length > 0
                 ? "hover:bg-red-100 text-red-600 cursor-pointer"
                 : "text-gray-300 cursor-not-allowed"
-            }`}
+              }`}
           >
             <MdDeleteOutline size={"20px"} />
           </button>
           <button
             onClick={handleStarSelected}
             disabled={selectedEmails.length === 0 || loading}
-            className={`p-2 rounded-full transition ${
-              selectedEmails.length > 0
+            className={`p-2 rounded-full transition ${selectedEmails.length > 0
                 ? "hover:bg-yellow-100 text-yellow-500 cursor-pointer"
                 : "text-gray-300 cursor-not-allowed"
-            }`}
+              }`}
           >
             <MdStar size={"20px"} />
           </button>
           <button
             onClick={handleImportantSelected}
             disabled={selectedEmails.length === 0 || loading}
-            className={`p-2 rounded-full transition ${
-              selectedEmails.length > 0
+            className={`p-2 rounded-full transition ${selectedEmails.length > 0
                 ? "hover:bg-green-100 text-green-500 cursor-pointer"
                 : "text-gray-300 cursor-not-allowed"
-            }`}
+              }`}
           >
             <MdBookmark size={"20px"} />
           </button>
@@ -163,12 +159,13 @@ const Message = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className={`flex items-start justify-between border-b border-gray-200 px-4 py-3 text-sm transition ${
-                isSelected ? "bg-blue-50" : "hover:bg-gray-50"
-              }`}
+              className={`flex items-start justify-between border-b border-gray-200 px-4 py-3 text-sm transition ${isSelected ? "bg-blue-50" : "hover:bg-gray-50"
+                }`}
               onClick={() => handleClick(email._id)}
             >
               <div className="flex items-center gap-3">
+
+
                 <div
                   className="text-gray-500 cursor-pointer"
                   onClick={(e) => {
@@ -200,7 +197,17 @@ const Message = () => {
                 </p>
               </div>
 
-              <div className="flex-none text-gray-400 text-sm">
+              <div>
+                {/* User-friendly tags */}
+                {email.detail.starred && (
+                  <span className="ml-2 text-yellow-600 font-semibold">Starred</span>
+                )}
+                {email.detail.important && (
+                  <span className="ml-2 text-green-600 font-semibold">Important</span>
+                )}
+              </div>
+
+              <div className="flex-none text-gray-400 text-sm ml-3">
                 <p>{new Date(email.createdAt).toLocaleDateString()}</p>
               </div>
             </motion.div>

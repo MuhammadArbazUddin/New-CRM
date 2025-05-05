@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import Test from "../components/test";
+// import Test from "../components/test";
 import Message from "../components/Message";
 
 const InboxPage = () => {
@@ -12,7 +12,7 @@ const InboxPage = () => {
         <Sidebar />
         <div className="w-full">
           <Message />
-          <Test />
+          {/* <Test /> */}
         </div>
       </div>
     </>

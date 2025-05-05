@@ -1,11 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoMdArrowBack } from "react-icons/io";
-import {
-  MdDeleteOutline,
-  MdOutlineMarkEmailUnread,
-  MdOutlineReport,
-} from "react-icons/md";
 import { motion } from "framer-motion";
 import { useMailStore } from "../../../../store/useMailStore";
 import Navbar from "./Navbar";
@@ -43,12 +38,9 @@ const Mail = () => {
               </div>
             </div>
             <div>
-              <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer">
-                <MdDeleteOutline size={"20px"} />
-              </div>
+           <div></div>
             </div>
           </div>
-
           <div className="h-[90vh] px-3 overflow-y-auto">
             <div className="flex justify-between bg-white items-center gap-1">
               <div className="flex items-center gap-2">

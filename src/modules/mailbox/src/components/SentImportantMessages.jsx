@@ -198,7 +198,17 @@ const SentImportantMessages = () => {
                 </p>
               </div>
 
-              <div className="flex-none text-gray-400 text-sm">
+              <div>
+                {/* User-friendly tags */}
+                {email.detail.starred && (
+                  <span className="ml-2 text-yellow-600 font-semibold">Starred</span>
+                )}
+                {email.detail.important && (
+                  <span className="ml-2 text-green-600 font-semibold">Important</span>
+                )}
+              </div>
+
+              <div className="flex-none text-gray-400 text-sm ml-3">
                 <p>{new Date(email.createdAt).toLocaleDateString()}</p>
               </div>
             </motion.div>

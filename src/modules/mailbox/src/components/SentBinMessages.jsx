@@ -4,11 +4,12 @@ import {
   MdCheckBox,
   MdDeleteOutline,
   MdRestoreFromTrash,
+  MdRestore,
 } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useMailStore } from "../../../../store/useMailStore";
 import { useNavigate } from "react-router-dom";
-import { LuRefreshCcw } from "react-icons/lu";
+import { LuArchiveRestore, LuRefreshCcw } from "react-icons/lu";
 
 const SentBinMessages = () => {
   const {
@@ -49,7 +50,7 @@ const SentBinMessages = () => {
     for (const id of selectedEmails) {
       await toggleTrash(id);
     }
-    fetchInboxEmails();
+    fetchTrash();
   };
   const handleBulkDelete = async () => {
     if (selectedEmails.length === 0) return;
@@ -99,7 +100,7 @@ const SentBinMessages = () => {
                 : "text-gray-300 cursor-not-allowed"
             }`}
           >
-            <MdRestoreFromTrash size={"20px"} />
+            <LuArchiveRestore size={"18px"} />
           </button>
           <button
             onClick={handleBulkDelete}
@@ -134,6 +135,7 @@ const SentBinMessages = () => {
               }`}
             >
               <div className="flex items-center gap-3">
+              
                 <div
                   className="text-gray-500 cursor-pointer"
                   onClick={() => toggleSelect(email._id)}

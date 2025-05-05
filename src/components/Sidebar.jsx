@@ -1,5 +1,5 @@
-import { Home, Mail, MailIcon, Menu, Settings, User } from "lucide-react";
 import React, { useState } from "react";
+import { MdDashboard, MdMail, MdMenu } from "react-icons/md";
 import { Link, NavLink, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
@@ -11,7 +11,8 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    { icon: <MailIcon size={20} />, label: "Mailbox", to: "/mail" },
+    { icon: <MdDashboard size={20} />, label: "Dashboard", to: "/" },
+    { icon: <MdMail size={20} />, label: "Mailbox", to: "/mail" },
   ];
 
   return (
@@ -22,14 +23,14 @@ const Sidebar = () => {
     >
       {/* Sidebar Header */}
       <div className="flex items-center justify-between mb-6">
-        {isExpanded && <NavLink to="/" className="text-xl font-bold">Dashboard</NavLink>}
+        {isExpanded && <NavLink to="/" className="text-xl font-bold">CRM</NavLink>}
         <button onClick={toggleSidebar}>
-          <Menu className="ml-2 cursor-pointer" size={24} />
+          <MdMenu className="ml-2 cursor-pointer" size={24} />
         </button>
       </div>
 
       {/* Menu Items */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
         {menuItems.map((item, index) => {
           const isActive = location.pathname === item.to;
 

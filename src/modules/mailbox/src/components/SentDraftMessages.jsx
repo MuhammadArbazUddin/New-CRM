@@ -42,7 +42,6 @@ const SentDraftMessages = () => {
   const removeDraftSelected = async (id) => {
     try {
       await removeDraft(id);
-      console.log("Draft removed successfully.");
     } catch (err) {
       console.error("Failed to remove draft:", err.message);
     }

@@ -12,12 +12,11 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-blue-600 text-white">
-      <h1 className="text-xl font-bold">CRM</h1>
+    <nav className='absolute right-0 top-0'>
       {authUser ? (
         <button
           onClick={handleLogout}
-          className="bg-white text-blue-600 px-4 py-2 rounded hover:bg-blue-100 transition"
+          className="text-blue-600 px-4 py-2 rounded cursor-pointer"
         >
           Logout
         </button>

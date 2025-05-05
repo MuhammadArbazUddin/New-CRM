@@ -20,21 +20,29 @@ const SendEmail = () => {
     getAllUser();
   }, [getAllUser]);
 
-  const changeHandler = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "to") {
-      setDropdownVisible(true);
+const changeHandler = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
 
-      if (users) {
-        const filtered = users.filter((user) =>
-          user.email.toLowerCase().includes(value.toLowerCase())
-        );
-        setFilteredUsers(filtered);
-      }
+  if (name === "to") {
+    const inputValue = value.trim().toLowerCase();
+    setDropdownVisible(true);
+
+    if (inputValue.length >= 1 && Array.isArray(users)) {
+      const filtered = users.filter((user) => {
+        const email = user.email?.toLowerCase() || "";
+        return email.includes(inputValue);
+      });
+
+      setFilteredUsers(filtered);
+    } else {
+      setFilteredUsers([]);
     }
-  };
+  }
+};
+
+  
 
   const handleSelectUser = (user) => {
     setFormData((prev) => ({ ...prev, to: user.email }));

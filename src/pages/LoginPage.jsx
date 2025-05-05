@@ -10,7 +10,6 @@ const LoginPage = () => {
   const { login } = useAuthStore();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
 
     if (!email || !password) {
       setError('Please enter both email and password.');
@@ -23,6 +22,7 @@ const LoginPage = () => {
       await login({ email, password });
       navigate('/'); // Navigate to homepage on success
     } catch (err) {
+      toast.error('Login failed. Please check your credentials.');
       console.error('Login failed:', err);
       setError('Login failed. Please check your credentials.');
     }
