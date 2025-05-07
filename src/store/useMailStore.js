@@ -105,9 +105,9 @@ export const useMailStore = create((set, get) => ({
     }
   },
   
-  getImportantEmails: async () => {
+  getImportantEmails: async (page = 1) => {
     try {
-      const res = await axiosInstance.get("/mail/get-important");
+      const res = await axiosInstance.get(`/mail/get-important?page=${page}`);
       set({ importantEmails: res.data.data });
       console.log("Important emails fetched successfully:", res.data.data);
     } catch (error) {
@@ -115,9 +115,9 @@ export const useMailStore = create((set, get) => ({
     }
   },
 
-  getStarredEmails: async () => {
+  getStarredEmails: async (page = 1) => {
     try {
-      const res = await axiosInstance.get("/mail/get-starred");
+      const res = await axiosInstance.get(`/mail/get-starred?page=${page}`);
       set({ starredEmails: res.data.data });
       console.log("Starred emails fetched successfully:", res.data.data);
     } catch (error) {
@@ -125,9 +125,9 @@ export const useMailStore = create((set, get) => ({
     }
   },
 
-  getTrashEmails: async () => {
+  getTrashEmails: async (page = 1) => {
     try {
-      const res = await axiosInstance.get("/mail/get-trash");
+      const res = await axiosInstance.get(`/mail/get-trash?page=${page}`);
       set({ trashEmails: res.data.data });
       console.log("Trash emails fetched successfully:", res.data.data);
     } catch (error) {
@@ -150,15 +150,18 @@ export const useMailStore = create((set, get) => ({
     }
   },
   
-  getSentEmails: async () => {
+  getSentEmails: async (page = 1) => {
     try {
-      const res = await axiosInstance.get("/mail/sent");
+      const res = await axiosInstance.get(`/mail/sent`, {
+        params: { page },
+      });
       set({ sentEmails: res.data.data });
       console.log("Sent emails fetched successfully:", res.data.data);
     } catch (error) {
       console.error("Error fetching sent emails:", error);
     }
-  },
+  }
+,  
 
   toggleStarred: async (mailId) => {
     try {

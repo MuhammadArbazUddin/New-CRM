@@ -24,22 +24,18 @@ const SentStarredMessages = () => {
 
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
-  const fetchStarredEmails = async () => {
+  const fetchStarredEmails = async (pageNumber = 1) => {
     setLoading(true);
-    await getStarredEmails();
+    await getStarredEmails(pageNumber);
+    setPage(pageNumber);
     setLoading(false);
   };
 
   useEffect(() => {
-    if (starredEmails.length === 0) {
-      fetchStarredEmails();
-    }
-  }, [starredEmails.length]);
-
-  useEffect(() => {
-    fetchStarredEmails();
+    fetchStarredEmails(1);
   }, []);
 
   const handleClick = (mailId) => {
@@ -57,29 +53,31 @@ const SentStarredMessages = () => {
     for (const id of selectedEmails) {
       await toggleStarred(id);
     }
-    fetchStarredEmails();
+    fetchStarredEmails(page);
   };
 
   const handleTrashSelected = async () => {
     for (const id of selectedEmails) {
       await toggleTrash(id);
     }
-    fetchStarredEmails();
+    fetchStarredEmails(page);
   };
 
   const handleImportantSelected = async () => {
     for (const id of selectedEmails) {
       await toggleImportant(id);
     }
-    fetchStarredEmails();
+    fetchStarredEmails(page);
   };
 
-  const filteredEmails = starredEmails.filter((email) => {
+  const { currentPage, totalPages, mails = [] } = starredEmails || {};
+
+  const filteredEmails = mails.filter((email) => {
     if (!email) return false;
 
-    const subject = email?.subject?.toLowerCase() || "";
-    const body = email?.body?.toLowerCase() || "";
-    const senderName = email?.sender?.fullName?.toLowerCase() || "";
+    const subject = email.subject?.toLowerCase() || "";
+    const body = email.body?.toLowerCase() || "";
+    const senderName = email.sender?.fullName?.toLowerCase() || "";
     const search = searchQuery.toLowerCase();
 
     return (
@@ -98,7 +96,7 @@ const SentStarredMessages = () => {
             className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            onClick={!loading ? fetchStarredEmails : undefined}
+            onClick={!loading ? () => fetchStarredEmails(page) : undefined}
           >
             <LuRefreshCcw
               className={`${loading ? "animate-spin" : ""}`}
@@ -151,7 +149,7 @@ const SentStarredMessages = () => {
         <div className="text-center text-gray-400 mt-6 animate-pulse">
           Loading mails...
         </div>
-      ) : filteredEmails && filteredEmails.length > 0 ? (
+      ) : filteredEmails.length > 0 ? (
         filteredEmails.map((email) => {
           const isSelected = selectedEmails.includes(email._id);
           return (
@@ -179,14 +177,10 @@ const SentStarredMessages = () => {
                     <MdCheckBoxOutlineBlank className="w-5 h-5" />
                   )}
                 </div>
-                <div
-                  onClick={() => handleClick(email._id)}
-                  className="cursor-pointer"
-                ></div>
               </div>
 
-              <h1 className="font-semibold">
-                {email.sender?.fullName || "Unknown Receiver"}
+              <h1 className="font-semibold ml-4">
+                {email.sender?.fullName || "Unknown Sender"}
               </h1>
               <div className="flex-1 ml-4">
                 <p className="text-gray-600 truncate max-w-full">
@@ -198,11 +192,10 @@ const SentStarredMessages = () => {
               </div>
 
               <div>
-                {/* User-friendly tags */}
-                {email.detail.starred && (
+                {email.detail?.starred && (
                   <span className="ml-2 text-yellow-600 font-semibold">Starred</span>
                 )}
-                {email.detail.important && (
+                {email.detail?.important && (
                   <span className="ml-2 text-green-600 font-semibold">Important</span>
                 )}
               </div>
@@ -217,6 +210,29 @@ const SentStarredMessages = () => {
         <p className="text-center text-gray-500 mt-4">
           {loading ? "Loading emails..." : "No emails found"}
         </p>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6 space-x-4">
+          <button
+            onClick={() => fetchStarredEmails(page - 1)}
+            disabled={page <= 1 || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Prev
+          </button>
+          <span className="self-center text-sm font-medium text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => fetchStarredEmails(page + 1)}
+            disabled={page >= totalPages || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
       )}
     </div>
   );

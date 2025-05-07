@@ -15,18 +15,21 @@ const SentDraftMessages = () => {
 
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchDrafts();
-  }, []);
-
-  const fetchDrafts = async () => {
+  const fetchDrafts = async (pageNumber = 1) => {
     setLoading(true);
-    await getDraftEmails();
-    setSelectedEmails([]);
+    await getDraftEmails(pageNumber);
+    setPage(pageNumber);
     setLoading(false);
   };
+
+
+  useEffect(() => {
+    fetchDrafts(1);
+  }, []);
+
 
   const handleClick = (mailId) => {
     getMailById(mailId);
@@ -45,17 +48,34 @@ const SentDraftMessages = () => {
     } catch (err) {
       console.error("Failed to remove draft:", err.message);
     }
-    fetchDrafts();
+    fetchDrafts(page);
   };
 
-  const filteredEmails = draftEmails.filter(
-    (email) =>
-      email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      email.body.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      email.receiver?.fullName
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase())
-  );
+  const { currentPage, totalPages, mails = [] } = draftEmails || {};
+
+  const filteredEmails = mails.filter((email) => {
+    if (!email) return false;
+  
+    const subject = email.subject?.toLowerCase() || "";
+    const body = email.body?.toLowerCase() || "";
+    const receiverName = email.receiver?.fullName?.toLowerCase() || "";
+    const search = searchQuery.toLowerCase();
+  
+    return (
+      subject.includes(search) ||
+      body.includes(search) ||
+      receiverName.includes(search)
+    );
+  });
+  
+  // const filteredEmails = draftEmails.filter(
+  //   (email) =>
+  //     email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     email.body.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     email.receiver?.fullName
+  //       ?.toLowerCase()
+  //       .includes(searchQuery.toLowerCase())
+  // );
 
   return (
     <div className="p-4 max-w-full overflow-x-hidden">
@@ -65,7 +85,7 @@ const SentDraftMessages = () => {
              className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            onClick={fetchDrafts}
+            onClick={!loading ? () => fetchDrafts(page) : undefined}
           >
             <LuRefreshCcw className={`${loading ? "animate-spin" : ""}`} size={"20px"} />
           </button>
@@ -150,6 +170,29 @@ const SentDraftMessages = () => {
         })
       ) : (
         <p className="text-center text-gray-500 mt-4">No emails found</p>
+      )}
+
+                 {/* Pagination Controls */}
+                 {totalPages > 1 && (
+        <div className="flex justify-center mt-6 space-x-4">
+          <button
+            onClick={() => fetchDrafts(page - 1)}
+            disabled={page <= 1 || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Prev
+          </button>
+          <span className="self-center text-sm font-medium text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => fetchDrafts(page + 1)}
+            disabled={page >= totalPages || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
       )}
     </div>
   );

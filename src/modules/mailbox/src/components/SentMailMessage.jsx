@@ -15,22 +15,18 @@ const SentMailMessage = () => {
 
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
-  const fetchSentEmails = async () => {
+  const fetchSentEmails = async (pageNumber = 1) => {
     setLoading(true);
-    await getSentEmails();
+    await getSentEmails(pageNumber);
+    setPage(pageNumber);
     setLoading(false);
   };
 
   useEffect(() => {
-    if (sentEmails.length === 0) {
-      fetchSentEmails();
-    }
-  }, [sentEmails.length]);
-
-  useEffect(() => {
-    fetchSentEmails();
+    fetchSentEmails(1);
   }, []);
 
   const handleClick = (mailId) => {
@@ -48,10 +44,10 @@ const SentMailMessage = () => {
     for (const id of selectedEmails) {
       await toggleTrash(id);
     }
-    fetchSentEmails();
+    fetchSentEmails(page);
   };
 
-  const filteredEmails = sentEmails.filter((email) => {
+  const filteredEmails = sentEmails.mails?.filter((email) => {
     if (!email) return false;
 
     const subject = email?.subject?.toLowerCase() || "";
@@ -66,6 +62,8 @@ const SentMailMessage = () => {
     );
   });
 
+  const { currentPage, totalPages } = sentEmails || {};
+
   return (
     <div className="p-4 max-w-full overflow-x-hidden">
       {/* Top Action Buttons */}
@@ -75,7 +73,7 @@ const SentMailMessage = () => {
             className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            onClick={!loading ? fetchSentEmails : undefined}
+            onClick={!loading ? () => fetchSentEmails(page) : undefined}
           >
             <LuRefreshCcw
               className={`${loading ? "animate-spin" : ""}`}
@@ -134,13 +132,9 @@ const SentMailMessage = () => {
                     <MdCheckBoxOutlineBlank className="w-5 h-5" />
                   )}
                 </div>
-                <div
-                  onClick={() => handleClick(email._id)}
-                  className="cursor-pointer"
-                ></div>
               </div>
 
-              <h1 className="font-semibold">
+              <h1 className="font-semibold ml-4">
                 {email.sender?.fullName || "Unknown Receiver"}
               </h1>
               <div className="flex-1 ml-4">
@@ -162,6 +156,29 @@ const SentMailMessage = () => {
         <p className="text-center text-gray-500 mt-4">
           {loading ? "Loading emails..." : "No emails found"}
         </p>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6 space-x-4">
+          <button
+            onClick={() => fetchSentEmails(page - 1)}
+            disabled={page <= 1 || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Prev
+          </button>
+          <span className="self-center text-sm font-medium text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => fetchSentEmails(page + 1)}
+            disabled={page >= totalPages || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
       )}
     </div>
   );

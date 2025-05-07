@@ -22,17 +22,20 @@ const SentBinMessages = () => {
   } = useMailStore();
   const [selectedEmails, setSelectedEmails] = useState([]);
   const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
-  const fetchTrash = async () => {
+
+  
+  const fetchTrash = async (pageNumber = 1) => {
     setLoading(true);
-    await getTrashEmails();
-    setSelectedEmails([]);
+    await getTrashEmails(pageNumber);
+    setPage(pageNumber);
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchTrash();
+    fetchTrash(1);
   }, []);
 
   const handleClick = (mailId) => {
@@ -50,7 +53,7 @@ const SentBinMessages = () => {
     for (const id of selectedEmails) {
       await toggleTrash(id);
     }
-    fetchTrash();
+    fetchTrash(page);
   };
   const handleBulkDelete = async () => {
     if (selectedEmails.length === 0) return;
@@ -59,17 +62,35 @@ const SentBinMessages = () => {
       await removeTrash(id);
     }
 
-    fetchTrash(); // Refresh after deletion
+    fetchTrash(page); // Refresh after deletion
   };
 
-  const filteredEmails = trashEmails.filter(
-    (email) =>
-      email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      email.body.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      email.receiver?.fullName
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase())
-  );
+  // const filteredEmails = trashEmails.filter(
+  //   (email) =>
+  //     email.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     email.body.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     email.receiver?.fullName
+  //       ?.toLowerCase()
+  //       .includes(searchQuery.toLowerCase())
+  // );
+
+  const filteredEmails = trashEmails.mails?.filter((email) => {
+    if (!email) return false;
+
+    const subject = email?.subject?.toLowerCase() || "";
+    const body = email?.body?.toLowerCase() || "";
+    const senderName = email?.sender?.fullName?.toLowerCase() || "";
+    const search = searchQuery.toLowerCase();
+
+    return (
+      subject.includes(search) ||
+      body.includes(search) ||
+      senderName.includes(search)
+    );
+  });
+
+  const { currentPage, totalPages } = trashEmails || {};
+
 
   return (
     <div className="p-4 max-w-full overflow-x-hidden">
@@ -79,7 +100,7 @@ const SentBinMessages = () => {
             className={`p-2 rounded-full hover:bg-gray-100 cursor-pointer transition duration-200 ease-in-out ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            onClick={fetchTrash}
+            onClick={!loading ? () => fetchTrash(page) : undefined}
           >
             <LuRefreshCcw
               className={`${loading ? "animate-spin" : ""}`}
@@ -174,6 +195,28 @@ const SentBinMessages = () => {
         })
       ) : (
         <p className="text-center text-gray-500 mt-4">No emails found</p>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6 space-x-4">
+          <button
+            onClick={() => fetchSentEmails(page - 1)}
+            disabled={page <= 1 || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Prev
+          </button>
+          <span className="self-center text-sm font-medium text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => fetchSentEmails(page + 1)}
+            disabled={page >= totalPages || loading}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
       )}
     </div>
   );
