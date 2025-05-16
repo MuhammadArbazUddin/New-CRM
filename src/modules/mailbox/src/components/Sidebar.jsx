@@ -3,6 +3,7 @@ import { Pencil, Inbox, Star, Bookmark, Send, FileText, Trash } from "lucide-rea
 import { useMailStore } from "../../../../store/useMailStore";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import SendEmail from "./SendEmail";
 
 const sidebarItems = [
   {
@@ -13,27 +14,27 @@ const sidebarItems = [
   {
     icon: <Star size={20} />,
     text: "Starred",
-    link: "/starred",
+    link: "/mail/starred",
   },
   {
     icon: <Bookmark size={20} />,
     text: "Important",
-    link: "/important",
+    link: "/mail/important",
   },
   {
     icon: <Send size={20} />,
     text: "Sent",
-    link: "/sent",
+    link: "/mail/sent",
   },
   {
     icon: <FileText size={20} />,
     text: "Drafts",
-    link: "/drafts",
+    link: "/mail/drafts",
   },
   {
     icon: <Trash size={20} />,
     text: "Bin",
-    link: "/bin",
+    link: "/mail/bin",
   },
 ];
 
@@ -43,6 +44,7 @@ const Sidebar = () => {
 
   return (
     <div className=" min-h-screen bg-white  rounded-tr-3xl rounded-br-3xl p-4 flex flex-col">
+     <SendEmail />
       <div className="mb-6">
         <button
           onClick={() => {

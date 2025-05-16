@@ -10,19 +10,20 @@ const LoginPage = () => {
   const { login } = useAuthStore();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     const cleanedEmail = email.trim().toLowerCase();
     const cleanedPassword = password.trim();
-  
+
     if (!cleanedEmail || !cleanedPassword) {
       setError('Please enter both email and password.');
       return;
     }
-  
+
     setError('');
-  
+
     try {
-      await login({ email: cleanedEmail, password: cleanedPassword });
+      await login({ Email: cleanedEmail, Password: cleanedPassword });
+      window.location.reload()
       navigate('/');
     } catch (err) {
       const errMsg = err?.response?.data?.message || 'Login failed. Please check your credentials.';
@@ -74,10 +75,10 @@ const LoginPage = () => {
             Log In
           </button>
         </form>
-
+        {/* 
         <p className="text-center text-sm text-gray-500 mt-4">
           Don’t have an account? <Link to="/signup" className="text-blue-600 font-medium hover:underline">Sign up</Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );

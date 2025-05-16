@@ -22,11 +22,21 @@ export const useMailStore = create((set, get) => ({
     set({ isOpen: next });
   },
 
+  // getAllUser: async () => {
+  //   try {
+  //     const res = await axiosInstance.get("/user/get-all");
+  //     set({ users: res.data.data });
+  //     console.log("Users fetched successfully:", res.data.data);
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+  //   }
+  // },
+
   getAllUser: async () => {
     try {
-      const res = await axiosInstance.get("/user/get-all");
-      set({ users: res.data.data });
-      console.log("Users fetched successfully:", res.data.data);
+      const res = await axiosInstance.get("/hrm/member/get-all-members");
+      set({ users: res.data.data.users });
+      console.log("Users fetched successfully:", res.data.data.users);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -160,8 +170,7 @@ export const useMailStore = create((set, get) => ({
     } catch (error) {
       console.error("Error fetching sent emails:", error);
     }
-  }
-,  
+  },  
 
   toggleStarred: async (mailId) => {
     try {

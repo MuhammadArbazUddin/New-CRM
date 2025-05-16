@@ -44,7 +44,7 @@ const Mail = () => {
           <div className="h-[90vh] px-3 overflow-y-auto">
             <div className="flex justify-between bg-white items-center gap-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-medium">{currentEmail?.subject}</h1>
+                <h1 className="text-xl font-medium">{currentEmail?.subject|| "Subject"}</h1>
                 <span className="text-sm bg-gray-200 rounded-md px-2">
                   {currentEmail?.detail?.starred ? "Starred" : "Inbox"}
                 </span>
@@ -55,9 +55,9 @@ const Mail = () => {
             </div>
 
             <div className="text-gray-500 text-sm">
-              <h1 className="font-medium">{currentEmail?.sender.fullName}</h1>
+              <h1 className="font-medium">{currentEmail?.sender.Email ||"example@gmail.com"}</h1>
               <span className="text-sm">
-                to {currentEmail?.receiver[0]?.receiverId?.fullName}
+                to {currentEmail?.receiver[0]?.receiverId?.Email || "example@gmail.com"}
               </span>
             </div>
 

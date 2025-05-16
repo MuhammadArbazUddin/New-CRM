@@ -167,7 +167,7 @@ const Message = () => {
               </div>
 
               <h1 className="font-semibold ml-4">
-                {email.sender?.fullName || "Unknown Sender"}
+                {email.sender?.FullName || "Unknown Sender"}
               </h1>
 
               <div className="flex-1 ml-4">
